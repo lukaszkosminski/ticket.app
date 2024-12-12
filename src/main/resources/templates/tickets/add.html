@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dodaj mandat</title>
+</head>
+<body>
+<h1>Dodaj mandat</h1>
+<form th:action="@{/tickets/add}" th:object="${ticket}" method="post" enctype="multipart/form-data">
+    <label>Sygnatura:</label>
+    <input type="text" th:field="*{signature}" required/><br/>
+
+    <label>Typ pracownika:</label>
+    <select th:field="*{employeeType}">
+        <option value="physical">Pracownik fizyczny</option>
+        <option value="office">Pracownik biurowy</option>
+    </select><br/>
+
+    <label>Imię:</label>
+    <input type="text" th:field="*{firstName}" /><br/>
+
+    <label>Nazwisko:</label>
+    <input type="text" th:field="*{lastName}" /><br/>
+
+    <label>Data wykroczenia:</label>
+    <input type="date" th:field="*{violationDate}" required/><br/>
+
+    <label>Powód:</label>
+    <input type="text" th:field="*{reason}" required/><br/>
+
+    <label>Kwota:</label>
+    <input type="number" th:field="*{amount}" step="0.01" required/><br/>
+
+    <label>Waluta:</label>
+    <select th:field="*{currency}">
+        <option value="PLN">PLN</option>
+        <option value="EUR">EUR</option>
+    </select><br/>
+
+    <label>Termin płatności:</label>
+    <input type="date" th:field="*{dueDate}" required/><br/>
+
+    <label>Załącznik (PDF):</label>
+    <input type="file" name="file" accept="application/pdf"/><br/>
+
+    <button type="submit">Zapisz</button>
+    <a href="/fines">Anuluj</a>
+</form>
+</body>
+</html>

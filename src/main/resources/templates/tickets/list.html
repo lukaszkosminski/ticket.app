@@ -1,0 +1,81 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <title>Lista mandatów</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>Lista mandatów</h1>-->
+<!--<table border="1">-->
+<!--    <thead>-->
+<!--    <tr>-->
+<!--        <th>Sygnatura</th>-->
+<!--        <th>Imię</th>-->
+<!--        <th>Nazwisko</th>-->
+<!--        <th>Firma</th>-->
+<!--        <th>Data wykroczenia</th>-->
+<!--        <th>Kwota</th>-->
+<!--        <th>Status</th>-->
+<!--    </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--    <tr th:each="ticket : ${tickets}">-->
+<!--        <td th:text="${ticket.signature}"></td>-->
+<!--        <td th:text="${ticket.firstName}"></td>-->
+<!--        <td th:text="${ticket.lastName}"></td>-->
+<!--        <td th:text="${ticket.company}"></td>-->
+<!--        <td th:text="${ticket.violationDate}"></td>-->
+<!--        <td th:text="${ticket.amount} + ' ' + ${ticket.currency}"></td>-->
+<!--        <td th:style="'color:' + (${ticket.status} == 'do zapłaty' ? 'red' : 'green')"-->
+<!--            th:text="${ticket.status}"></td>-->
+<!--    </tr>-->
+<!--    </tbody>-->
+<!--</table>-->
+<!--<a href="/tickets/add">Dodaj mandat</a>-->
+<!--</body>-->
+<!--</html>-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista mandatów</title>
+</head>
+<body>
+<h1>Lista mandatów</h1>
+
+<!-- Form for filtering by status -->
+<form action="/tickets/filter" method="get">
+    <label>Status:</label>
+    <select name="status">
+        <option value="do zapłaty">Do zapłaty</option>
+        <option value="opłacony">Opłacony</option>
+    </select>
+    <button type="submit">Filtruj</button>
+</form>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th><a href="?sort=signature">Sygnatura</a></th>
+        <th>Imię</th>
+        <th>Nazwisko</th>
+        <th>Firma</th>
+        <th>Data wykroczenia</th>
+        <th><a href="?sort=amount">Kwota</a></th>
+        <th><a href="?sort=status">Status</a></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="ticket : ${tickets}">
+        <td th:text="${ticket.signature}"></td>
+        <td th:text="${ticket.firstName}"></td>
+        <td th:text="${ticket.lastName}"></td>
+        <td th:text="${ticket.company}"></td>
+        <td th:text="${ticket.violationDate}"></td>
+        <td th:text="${ticket.amount} + ' ' + ${ticket.currency}"></td>
+        <td th:style="'color:' + (${ticket.status} == 'do zapłaty' ? 'red' : 'green')"
+            th:text="${ticket.status}"></td>
+    </tr>
+    </tbody>
+</table>
+<a href="/tickets/add">Dodaj mandat</a>
+</body>
+</html>
