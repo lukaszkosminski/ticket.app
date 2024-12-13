@@ -1,64 +1,97 @@
 package com.example.ticket.service;
+
+import com.example.ticket.model.Person;
 import com.example.ticket.model.Ticket;
-import com.example.ticket.repo.TicketRepo;
+import com.example.ticket.repo.PersonRepository;
+import com.example.ticket.repo.TicketRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
+import java.math.BigDecimal;
 
 
 @Service
 @RequiredArgsConstructor
 public class TicketService {
 
-    private final TicketRepo ticketRepo;
+    private final TicketRepository ticketRepository;
+    private final PersonRepository personRepository;
+    private final JavaMailSender mailSender;
 
-    public Ticket addTicket(Ticket ticket) {
-        if (ticketRepo.findBySignature(ticket.getSignature()).isPresent()) {
-            throw new IllegalArgumentException("Mandat z wpisaną sygnaturą już istnieje w systemie");
+    @Value("${email.sender}")
+    private String emailSender;
+
+    @Value("${ticket.default-administrative-fee}")
+    private BigDecimal defaultAdministrativeFee;
+
+    public void saveTicket(Ticket ticket) {
+        validateSignatureUniqueness(ticket.getSignature());
+        ticket.setPaid(false);
+        ticket.setFineAmount(calculateTotalCostTicket(ticket));
+        ticketRepository.save(ticket);
+        sendNotificationEmail(ticket);
+    }
+
+    public boolean isSignatureUnique(String signature) {
+        return !ticketRepository.existsBySignature(signature);
+    }
+
+    public void markAsPaid(Long ticketId) {
+        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(() -> new RuntimeException("Ticket not found"));
+        ticket.setPaid(true);
+        ticketRepository.save(ticket);
+    }
+
+    public List<Ticket> findAll() {
+        return ticketRepository.findAll();
+    }
+
+    public void savePerson(Person person) {
+        personRepository.save(person);
+    }
+
+    public List<Ticket> findByLastName(String lastName) {
+        return ticketRepository.findByPersonLastNameContainingIgnoreCase(lastName);
+    }
+
+    public List<Ticket> findBySignature(String signature) {
+        return ticketRepository.findBySignatureContainingIgnoreCase(signature);
+    }
+
+    public List<Ticket> findByPhoneNumber(String phoneNumber) {
+        return ticketRepository.findByPersonPhoneNumberContaining(phoneNumber);
+    }
+
+    private void sendNotificationEmail(Ticket ticket) {
+
+        String to = ticket.getPerson().getEmail();
+        String subject = "Ticket nr. " + ticket.getSignature() + " prośba o opłacenie";
+        String text = "Dzień dobry, Pragniemy poinformować, że właśnie został dodany do naszej aplikacji ticket o numerze "
+                + ticket.getSignature() + " na kwotę " + ticket.getFineAmount() + " " + ticket.getCurrency()
+                + ". Prosimy o dokonanie wpłaty do dnia " + ticket.getPaymentDueDate()
+                + ". Szczegółowe informacje dotyczące ticketu znajdziesz pod linkiem: [link do ticketu]."
+                + " Wiadomość wysłana automatycznie. Nie odpowiadaj na nią.";
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(emailSender);
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(text);
+        mailSender.send(message);
+    }
+
+    private BigDecimal calculateTotalCostTicket(Ticket ticket) {
+        BigDecimal administrativeFee = defaultAdministrativeFee;
+        return ticket.getFineAmount().add(administrativeFee);
+    }
+
+    private void validateSignatureUniqueness(String signature) {
+        if (ticketRepository.existsBySignature(signature)) {
+            throw new IllegalArgumentException("Signature '" + signature + "' already exists. Please use a unique signature.");
         }
-        return ticketRepo.save(ticket);
     }
-
-    public List<Ticket> getAllFines() {
-        return ticketRepo.findAll();
-    }
-
-    public Object findByStatusOrderByAmount(String status) {
-        return ticketRepo.findByStatusOrderByAmount(status);
-    }
-
-//    public Object filterAndSortTickets(String status, String sort) {
-//        return ticketRepo.filterAndSortTickets(status, sort);
-//    }
-//public List<Ticket> filterAndSortTickets(String status, String sort) {
-//    // Implement the logic to filter by status and sort by the specified field
-//    // This is a placeholder implementation and should be replaced with actual logic
-//    if (status != null && sort != null) {
-//        return ticketRepo.findByStatusOrderByField(status, sort);
-//    } else if (status != null) {
-//        return ticketRepo.findByStatus(status);
-//    } else if (sort != null) {
-//        return ticketRepo.findAllOrderByField(sort);
-//    } else {
-//        return ticketRepo.findAll();
-//    }
-
-    public List<Ticket> filterAndSortTickets(String status, String sort) {
-        if (status != null) {
-            return switch (sort) {
-                case "signature" -> ticketRepo.findByStatusOrderBySignature(status);
-                case "amount" -> ticketRepo.findByStatusOrderByAmount(status);
-                case "status" -> ticketRepo.findByStatusOrderByStatus(status);
-                default -> ticketRepo.findByStatus(status);
-            };
-        } else {
-            return switch (sort) {
-                case "signature" -> ticketRepo.findAllByOrderBySignature();
-                case "amount" -> ticketRepo.findAllByOrderByAmount();
-                case "status" -> ticketRepo.findAllByOrderByStatus();
-                default -> ticketRepo.findAll();
-            };
-        }
-}
 }

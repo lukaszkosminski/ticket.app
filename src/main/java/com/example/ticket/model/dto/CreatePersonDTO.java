@@ -1,24 +1,20 @@
-package com.example.ticket.model;
+package com.example.ticket.model.dto;
 
+import com.example.ticket.model.JobType;
+import com.example.ticket.model.Ticket;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import jdk.jfr.Enabled;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
-
-@Entity
 @Getter
 @Setter
-@EqualsAndHashCode
-@NoArgsConstructor
-public class Person {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class CreatePersonDTO {
+
     @Column(name = "first_name", nullable = false)
     private String firstName;
     @Column(name = "last_name", nullable = false)
@@ -34,10 +30,4 @@ public class Person {
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
     private String company;
-    @Column(name = "is_active", nullable = false)
-    private boolean isActive;
-
-    @OneToMany
-    private Set<Ticket> tickets = new HashSet<>();
-
 }

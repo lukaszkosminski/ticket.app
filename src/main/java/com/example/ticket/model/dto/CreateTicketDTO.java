@@ -1,27 +1,19 @@
-package com.example.ticket.model;
+package com.example.ticket.model.dto;
 
-import jakarta.persistence.Entity;
+import com.example.ticket.model.Currency;
+import com.example.ticket.model.Person;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
-import jakarta.validation.constraints.Positive;
-import lombok.*;
-
 @Getter
 @Setter
-@EqualsAndHashCode
-@NoArgsConstructor
-@Entity
-public class Ticket {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class CreateTicketDTO {
 
     @NotBlank(message = "Sygnatura jest wymagana.")
     @Column(nullable = false, unique = true)
@@ -46,7 +38,7 @@ public class Ticket {
     private Currency currency;
 
     @Column(name = "administrative_fee", nullable = false)
-    private BigDecimal administrativeFee = BigDecimal.valueOf(100.0);
+    private BigDecimal administrativeFee;
 
     @NotNull(message = "Termin płatności jest wymagany.")
     @Column(name = "payment_due_date", nullable = false)
@@ -54,11 +46,4 @@ public class Ticket {
 
     @Column(nullable = false)
     private boolean paid;
-
-//    @Lob
-//    private byte[] attachment;
-
-    @ManyToOne
-    @JoinColumn(name = "person_id")
-    private Person person;
 }
