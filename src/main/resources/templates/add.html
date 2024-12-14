@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Ticket</title>
+</head>
+<body>
+<h1>Add New Ticket</h1>
+<form th:action="@{/add}" th:object="${ticket}" method="post" enctype="multipart/form-data">
+
+    <div>
+        <label for="signature">Signature:</label>
+        <input type="text" id="signature" name="signature" th:field="*{signature}" required/>
+        <div th:if="${#fields.hasErrors('signature')}" th:errors="*{signature}"></div>
+    </div>
+
+    <div>
+        <label for="offenseDate">Offense Date:</label>
+        <input type="date" id="offenseDate" name="offenseDate" th:field="*{offenseDate}" required/>
+        <div th:if="${#fields.hasErrors('offenseDate')}" th:errors="*{offenseDate}"></div>
+    </div>
+
+    <div>
+        <label for="offenseReason">Offense Reason:</label>
+        <textarea id="offenseReason" name="offenseReason" th:field="*{offenseReason}" required></textarea>
+        <div th:if="${#fields.hasErrors('offenseReason')}" th:errors="*{offenseReason}"></div>
+    </div>
+
+    <div>
+        <label for="fineAmount">Fine Amount:</label>
+        <input type="number" id="fineAmount" name="fineAmount" th:field="*{fineAmount}" required/>
+        <div th:if="${#fields.hasErrors('fineAmount')}" th:errors="*{fineAmount}"></div>
+    </div>
+
+    <div>
+        <label for="currency">Currency:</label>
+        <select id="currency" name="currency" th:field="*{currency}" required>
+            <option value="" disabled selected>Select Currency</option>
+            <option th:each="currency : ${currencies}" th:value="${currency}" th:text="${currency}"></option>
+        </select>
+        <div th:if="${#fields.hasErrors('currency')}" th:errors="*{currency}"></div>
+    </div>
+
+    <div>
+        <label for="paymentDueDate">Payment Due Date:</label>
+        <input type="date" id="paymentDueDate" name="paymentDueDate" th:field="*{paymentDueDate}" required/>
+        <div th:if="${#fields.hasErrors('paymentDueDate')}" th:errors="*{paymentDueDate}"></div>
+    </div>
+
+    <h2>Person Information</h2>
+    <div th:object="${person}">
+
+        <div>
+            <label for="jobType">Job Type:</label>
+            <select id="jobType" name="jobType" th:field="*{jobType}" required>
+                <option value="" disabled selected>Select Job Type</option>
+                <option th:each="type : ${jobTypes}" th:value="${type}" th:text="${type}"></option>
+            </select>
+            <div th:if="${#fields.hasErrors('jobType')}" th:errors="*{jobType}"></div>
+        </div>
+
+        <div>
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName" th:field="*{firstName}" required/>
+            <div th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+        </div>
+
+        <div>
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName" th:field="*{lastName}" required/>
+            <div th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+        </div>
+
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" th:field="*{email}" required/>
+            <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+        </div>
+
+        <div>
+            <label for="phoneNumber">Phone Number:</label>
+            <input type="text" id="phoneNumber" name="phoneNumber" th:field="*{phoneNumber}" required/>
+            <div th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
+        </div>
+
+        <div>
+            <label for="company">Company:</label>
+            <input type="text" id="company" name="company" th:field="*{company}"/>
+        </div>
+    </div>
+
+    <button type="submit">Submit</button>
+    <button type="button" onclick="window.location.href='/'">Anuluj</button>
+
+</form>
+</body>
+</html>
+
+

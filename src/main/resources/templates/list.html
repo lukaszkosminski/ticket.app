@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lista mandatów</title>
+</head>
+<body>
+<h1>Lista mandatów</h1>
+
+<!-- Form for filtering by status -->
+<!--<form action="/filter" method="get">-->
+<!--    <label>Status:</label>-->
+<!--    <select name="status">-->
+<!--        <option value="do zapłaty">Do zapłaty</option>-->
+<!--        <option value="opłacony">Opłacony</option>-->
+<!--    </select>-->
+<!--    <button type="submit">Filtruj</button>-->
+<!--</form>-->
+
+<table>
+    <thead>
+    <tr>
+        <th>Imię i nazwisko</th>
+        <th>Spółka</th>
+        <th>Nr telefonu</th>
+        <th>Sygnatura</th>
+        <th>Data wykroczenia</th>
+        <th>Powód wykroczenia</th>
+        <th>Kwota ticketu + waluta</th>
+        <th>Opłata administracyjna + waluta</th>
+        <th>Termin płatności</th>
+        <th>Status</th>
+        <th>Email</th> <!-- New header for email -->
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="ticket : ${tickets}">
+        <td th:text="${ticket.person.firstName + ' ' + ticket.person.lastName}"></td>
+        <td th:text="${ticket.person.company}"></td>
+        <td th:text="${ticket.person.phoneNumber}"></td>
+        <td th:text="${ticket.signature}"></td>
+        <td th:text="${ticket.offenseDate}"></td>
+        <td th:text="${ticket.offenseReason}"></td>
+        <td th:text="${ticket.fineAmount + ' ' + ticket.currency}"></td>
+        <td th:text="${ticket.administrativeFee + ' ' + ticket.currency}"></td>
+        <td th:text="${ticket.paymentDueDate}"></td>
+        <td th:text="${ticket.paid ? 'Opłacony' : 'Do zapłaty'}"></td>
+        <td th:text="${ticket.person.email}"></td>
+    </tr>
+    </tbody>
+</table>
+<a th:href="@{/add}">Dodaj mandat</a>
+</body>
+</html>
