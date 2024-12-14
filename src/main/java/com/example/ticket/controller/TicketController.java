@@ -9,6 +9,8 @@ import com.example.ticket.model.dto.CreateTicketDTO;
 import com.example.ticket.model.dto.mapper.PersonMapper;
 import com.example.ticket.model.dto.mapper.TicketMapper;
 import com.example.ticket.service.TicketService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,16 +18,16 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
+import java.math.BigDecimal;
+
 @Controller
-@RequestMapping
+@RequiredArgsConstructor
 public class TicketController {
 
     private final TicketService ticketService;
 
-    public TicketController(TicketService ticketService) {
-        this.ticketService = ticketService;
-    }
-
+    @Value("${ticket.default-administrative-fee}")
+    private BigDecimal defaultAdministrativeFee;
 
     @GetMapping("/add")
     public String addTicketsForm(Model model) {
@@ -45,7 +47,7 @@ public class TicketController {
 
     @GetMapping("/")
     public String listTickets(Model model) {
-        model.addAttribute("tickets", ticketService.findAll());
+        model.addAttribute("tickets", TicketMapper.toListDTO(ticketService.findAll()));
         return "list";
     }
 
@@ -56,6 +58,7 @@ public class TicketController {
         try {
             Person personEntity = PersonMapper.toEntity(person);
             Ticket ticketEntity = TicketMapper.toEntity(ticket);
+            ticketEntity.setAdministrativeFee(defaultAdministrativeFee);
             ticketEntity.setPerson(personEntity);
             ticketService.savePerson(personEntity);
             ticketService.saveTicket(ticketEntity);

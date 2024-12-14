@@ -6,7 +6,7 @@
 <body>
 <h1>Add New Ticket</h1>
 <form th:action="@{/add}" th:object="${ticket}" method="post" enctype="multipart/form-data">
-    <!-- Ticket Fields -->
+
     <div>
         <label for="signature">Signature:</label>
         <input type="text" id="signature" name="signature" th:field="*{signature}" required/>
@@ -31,7 +31,6 @@
         <div th:if="${#fields.hasErrors('fineAmount')}" th:errors="*{fineAmount}"></div>
     </div>
 
-    <!-- Currency Selection -->
     <div>
         <label for="currency">Currency:</label>
         <select id="currency" name="currency" th:field="*{currency}" required>
@@ -47,7 +46,6 @@
         <div th:if="${#fields.hasErrors('paymentDueDate')}" th:errors="*{paymentDueDate}"></div>
     </div>
 
-    <!-- Person Information -->
     <h2>Person Information</h2>
     <div th:object="${person}">
 

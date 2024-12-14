@@ -46,7 +46,7 @@ public class Ticket {
     private Currency currency;
 
     @Column(name = "administrative_fee", nullable = false)
-    private BigDecimal administrativeFee = BigDecimal.valueOf(100.0);
+    private BigDecimal administrativeFee;
 
     @NotNull(message = "Termin płatności jest wymagany.")
     @Column(name = "payment_due_date", nullable = false)
@@ -57,7 +57,7 @@ public class Ticket {
 
 //    @Lob
 //    private byte[] attachment;
-
+    @EqualsAndHashCode.Exclude
     @ManyToOne
     @JoinColumn(name = "person_id")
     private Person person;

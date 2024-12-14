@@ -37,6 +37,7 @@ public class Person {
     @Column(name = "is_active", nullable = false)
     private boolean isActive;
 
+    @EqualsAndHashCode.Exclude
     @OneToMany
     private Set<Ticket> tickets = new HashSet<>();
 

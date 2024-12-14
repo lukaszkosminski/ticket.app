@@ -10,11 +10,8 @@ import java.util.Optional;
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
     Optional<Ticket> findBySignature(String signature);
+
     boolean existsBySignature(String signature);
-    List<Ticket> findByPaid(boolean paid);
-    List<Ticket> findByCurrency(Currency currency);
-    List<Ticket> findByOffenseReason(String offenseReason);
-    List<Ticket> findByPerson_Company(String company);
 
     List<Ticket> findByPersonLastNameContainingIgnoreCase(String lastName);
 
